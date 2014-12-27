@@ -2,8 +2,9 @@ from datetime import datetime
 from pandas import date_range
 import shlex
 import subprocess as sp
+import sys, string, re
 
-start = datetime(year=2014, month=11, day=24)
+start = datetime(year=2014, month=12, day=01)
 end = datetime.today()
 range = date_range(start, end, freq='W')
 
@@ -25,5 +26,11 @@ def get_all_commit_message(date_range):
         commit_messages.append((commit_message(since_iso, until_iso)))
     return commit_messages
 
+def get_pure_text_message(date_range):
+    text = ""
+    for messages in get_all_commit_message(date_range):
+        for msg in messages:
+            text += msg
+    return text
 
-print get_all_commit_message(range)
+text = get_pure_text_message(range)
