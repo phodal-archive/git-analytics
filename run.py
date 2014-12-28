@@ -2,9 +2,8 @@ from datetime import datetime
 from pandas import date_range
 import shlex
 import subprocess as sp
-import sys, string, re
 
-start = datetime(year=2014, month=12, day=01)
+start = datetime(year=2012, month=12, day=01)
 end = datetime.today()
 range = date_range(start, end, freq='W')
 
@@ -26,11 +25,33 @@ def get_all_commit_message(date_range):
         commit_messages.append((commit_message(since_iso, until_iso)))
     return commit_messages
 
+
 def get_pure_text_message(date_range):
-    text = ""
+    results = ""
     for messages in get_all_commit_message(date_range):
         for msg in messages:
-            text += msg
-    return text
+            if "CSBAU" in msg or "CASAXIAN" in msg:
+                msg = msg.replace(":", "")
+                msg = msg.replace("&", "")
+                results += msg
 
-text = get_pure_text_message(range)
+    return results
+
+
+text = get_pure_text_message(range).split()
+
+print text
+
+import nltk
+from nltk.collocations import *
+
+bigram_measures = nltk.collocations.BigramAssocMeasures()
+
+finder = BigramCollocationFinder.from_words(text)
+
+# only bigrams that appear 3+ times
+finder.apply_freq_filter(1)
+
+print ""
+# return the 5 n-grams with the highest PMI
+print finder.nbest(bigram_measures.pmi, 100)
