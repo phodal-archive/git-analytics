@@ -13,7 +13,7 @@ DEFAULT_TTL = 6 * 30 * 24 * 60 * 60
 def get_connection():
     global redis_pool
     if redis_pool is None:
-        redis_pool = redis.ConnectionPool(host='localhost', port=6379, db=2)
+        redis_pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
     return redis.Redis(connection_pool=redis_pool)
 
 
