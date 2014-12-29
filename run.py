@@ -61,5 +61,6 @@ print ""
 print finder.nbest(bigram_measures.pmi, 100)
 
 hard = False
-for i in changes.get(hard).get_authorinfo_list():
-    print i
+authorinfo_list = changes.get(hard).get_authorinfo_list()
+for i in authorinfo_list:
+    print authorinfo_list.get(i).commits
