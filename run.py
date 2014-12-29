@@ -1,8 +1,11 @@
 from datetime import datetime
-from pandas import date_range
 import shlex
 import subprocess as sp
-import changes
+
+from pandas import date_range
+
+from gitinspector import changes
+
 
 start = datetime(year=2012, month=12, day=01)
 end = datetime.today()
@@ -56,3 +59,7 @@ finder.apply_freq_filter(1)
 print ""
 # return the 5 n-grams with the highest PMI
 print finder.nbest(bigram_measures.pmi, 100)
+
+hard = False
+for i in changes.get(hard).get_authorinfo_list():
+    print i
