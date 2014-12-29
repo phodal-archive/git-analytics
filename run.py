@@ -2,6 +2,7 @@ from datetime import datetime
 from pandas import date_range
 import shlex
 import subprocess as sp
+import changes
 
 start = datetime(year=2012, month=12, day=01)
 end = datetime.today()
