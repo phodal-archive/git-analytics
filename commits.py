@@ -19,7 +19,7 @@ class Commit:
         return p.stdout.readlines()
 
 
-    def get_all_commit_message(self, date_range):
+    def get_all_commit_message(self, date_range=range):
         commit_messages = []
         for index in xrange(len(date_range) - 1):
             since_date = date_range[index]
@@ -29,7 +29,7 @@ class Commit:
         return commit_messages
 
 
-    def get_pure_text_message(self, date_range):
+    def get_pure_text_message(self, date_range=range):
         results = ""
         for messages in self.get_all_commit_message(date_range):
             for msg in messages:
