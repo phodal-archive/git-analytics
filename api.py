@@ -45,13 +45,14 @@ class UserInfo(restful.Resource):
         f = open("data.csv", 'rb')
         try:
             reader = csv.reader(f)
-            for name, dev, new, pic_url in reader:
+            for user_id, name, dev, new, pic_url in reader:
                 seq = difflib.SequenceMatcher(None, name.lower(), user_name.lower())
                 if seq.ratio() > 0.8:
                     result = {
+                        "id": int(user_id),
                         "name": name,
-                        "dev": dev,
-                        "new": new,
+                        "dev": int(dev),
+                        "new": int(new),
                         "pic_url": pic_url
                     }
         finally:
@@ -66,8 +67,35 @@ class UserInfo(restful.Resource):
         return result, 201
 
 
+class All(restful.Resource):
+    @staticmethod
+    def get_info_from_csv(result):
+        f = open("data.csv", 'rb')
+        try:
+            reader = csv.reader(f)
+            for user_id, name, dev, new, pic_url in reader:
+                result.append({
+                    "id": int(user_id),
+                    "name": name,
+                    "dev": int(dev),
+                    "new": int(new),
+                    "pic_url": pic_url
+                })
+        finally:
+            f.close()
+        return result
+
+    @staticmethod
+    def get():
+        result = []
+        result = All.get_info_from_csv(result)
+        # result["more"] = User.get_user_commit_info(user_name)
+        return result, 201, {'Access-Control-Allow-Origin': '*'}
+
+
 api.add_resource(User, '/user/<string:user_name>')
 api.add_resource(UserInfo, '/userInfo/<string:user_name>')
+api.add_resource(All, '/all/account')
 
 if __name__ == '__main__':
     app.run(debug=True)
