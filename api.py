@@ -1,7 +1,10 @@
+import difflib
+import csv
+
 from flask import Flask
 from flask.ext import restful
+
 from run import Info
-import difflib
 from database import redis_execute, get_pipeline
 
 
@@ -12,15 +15,9 @@ pipe = get_pipeline()
 info = Info()
 
 
-class HelloWorld(restful.Resource):
-    @staticmethod
-    def get():
-        return info.bigrams()
-
-
 class User(restful.Resource):
     @staticmethod
-    def get(user_name):
+    def get_user_commit_info(user_name):
         count = 0
         redis_execute(pipe, "hkeys", "user")
         user_list = pipe.execute()[0]
@@ -34,11 +31,43 @@ class User(restful.Resource):
             if res != "True":
                 print res
                 count += int(res)
-        return {"name": user_name, "count": count}, 201
+        return {"name": user_name, "count": count}
+
+    @staticmethod
+    def get(user_name):
+        information = User.get_user_commit_info(user_name)
+        return information, 201
 
 
-api.add_resource(HelloWorld, '/')
+class UserInfo(restful.Resource):
+    @staticmethod
+    def get_info_from_csv(result, user_name):
+        f = open("data.csv", 'rb')
+        try:
+            reader = csv.reader(f)
+            for name, dev, new, pic_url in reader:
+                seq = difflib.SequenceMatcher(None, name.lower(), user_name.lower())
+                if seq.ratio() > 0.8:
+                    result = {
+                        "name": name,
+                        "dev": dev,
+                        "new": new,
+                        "pic_url": pic_url
+                    }
+        finally:
+            f.close()
+        return result
+
+    @staticmethod
+    def get(user_name):
+        result = []
+        result = UserInfo.get_info_from_csv(result, user_name)
+        result["more"] = User.get_user_commit_info(user_name)
+        return result, 201
+
+
 api.add_resource(User, '/user/<string:user_name>')
+api.add_resource(UserInfo, '/userInfo/<string:user_name>')
 
 if __name__ == '__main__':
     app.run(debug=True)
