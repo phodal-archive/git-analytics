@@ -29,7 +29,6 @@ class User(restful.Resource):
         result = pipe.execute()
         for res in result:
             if res != "True":
-                print res
                 count += int(res)
         return {"name": user_name, "count": count}
 
@@ -73,13 +72,15 @@ class All(restful.Resource):
         f = open("data.csv", 'rb')
         try:
             reader = csv.reader(f)
-            for user_id, name, dev, new, pic_url in reader:
+            for user_id, name, dev, new, pic_url, commit_name in reader:
+                commit = User.get_user_commit_info(commit_name)
                 result.append({
                     "id": int(user_id),
                     "name": name,
                     "dev": int(dev),
                     "new": int(new),
-                    "pic_url": pic_url
+                    "pic_url": pic_url,
+                    "point": commit
                 })
         finally:
             f.close()
@@ -89,7 +90,6 @@ class All(restful.Resource):
     def get():
         result = []
         result = All.get_info_from_csv(result)
-        # result["more"] = User.get_user_commit_info(user_name)
         return result, 201, {'Access-Control-Allow-Origin': '*'}
 
 
