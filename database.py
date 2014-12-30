@@ -23,7 +23,7 @@ def get_pipeline():
 
 
 def format_key(key):
-    return "{0}:{1}".format("gitAnalytics", key)
+    return "{0}:{1}".format("commit", key)
 
 def redis_execute(pipe, cmd, key, *args, **kwargs):
     key = format_key(key)
