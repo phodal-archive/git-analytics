@@ -90,7 +90,6 @@ def get_info_from_csv(result):
             if int(new) == 0:
                 point = 160 * sqrt(float(expr))
             else:
-                print int(commit["count"])
                 point = 160 * sqrt(float(expr)) * int(commit["count"]) / 90
 
             result.append({
@@ -102,7 +101,7 @@ def get_info_from_csv(result):
                 "point": commit,
                 "expr": float(expr),
                 "expr_tw": float(tw_expr),
-                "pr": point
+                "pr": int(point)
             })
     finally:
         f.close()

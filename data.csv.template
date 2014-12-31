@@ -1,2 +1,2 @@
-name,dev,new,pic_url
-Phodal,1,0,http://www.phodal.com/
+id,name,dev,new,pic_url,alias_name,expr,expr_tw
+1,Phodal,1,0,http://www.phodal.com/,fengda,1.0,1.0
