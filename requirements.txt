@@ -1,5 +1,6 @@
 pandas == 0.15.2
 nltk == 3.0.0
 redis == 2.10.3
-flask ==
-flask-restful ==
+flask == 0.10.1
+flask-restful == 0.3.1
+Flask-Cache == 0.13.1

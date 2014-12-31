@@ -1,14 +1,19 @@
 import difflib
 import csv
+from math import sqrt
 
 from flask import Flask
 from flask.ext import restful
+from flask.ext.cache import Cache
 
 from run import Info
 from database import redis_execute, get_pipeline
 
 
 app = Flask(__name__)
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+cache.init_app(app, config={'CACHE_TYPE': 'simple'})
+
 api = restful.Api(app)
 pipe = get_pipeline()
 
@@ -40,6 +45,7 @@ class User(restful.Resource):
 
 class UserInfo(restful.Resource):
     @staticmethod
+    @cache.memoize(5000)
     def get_info_from_csv(result, user_name):
         f = open("data.csv", 'rb')
         try:
@@ -68,29 +74,39 @@ class UserInfo(restful.Resource):
 
 class All(restful.Resource):
     @staticmethod
-    def get_info_from_csv(result):
-        f = open("data.csv", 'rb')
-        try:
-            reader = csv.reader(f)
-            for user_id, name, dev, new, pic_url, commit_name in reader:
-                commit = User.get_user_commit_info(commit_name)
-                result.append({
-                    "id": int(user_id),
-                    "name": name,
-                    "dev": int(dev),
-                    "new": int(new),
-                    "pic_url": pic_url,
-                    "point": commit
-                })
-        finally:
-            f.close()
-        return result
-
-    @staticmethod
     def get():
         result = []
-        result = All.get_info_from_csv(result)
+        result = get_info_from_csv(result)
         return result, 201, {'Access-Control-Allow-Origin': '*'}
+
+
+@cache.memoize(5000)
+def get_info_from_csv(result):
+    f = open("data.csv", 'rb')
+    try:
+        reader = csv.reader(f)
+        for user_id, name, dev, new, pic_url, commit_name, expr, tw_expr in reader:
+            commit = User.get_user_commit_info(commit_name)
+            if int(new) == 0:
+                point = 160 * sqrt(float(expr))
+            else:
+                print int(commit["count"])
+                point = 160 * sqrt(float(expr)) * int(commit["count"]) / 90
+
+            result.append({
+                "id": int(user_id),
+                "name": name,
+                "dev": int(dev),
+                "new": int(new),
+                "pic_url": pic_url,
+                "point": commit,
+                "expr": float(expr),
+                "expr_tw": float(tw_expr),
+                "pr": point
+            })
+    finally:
+        f.close()
+    return result
 
 
 api.add_resource(User, '/user/<string:user_name>')
