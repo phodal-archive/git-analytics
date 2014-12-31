@@ -87,10 +87,11 @@ def get_info_from_csv(result):
         reader = csv.reader(f)
         for user_id, name, dev, new, pic_url, commit_name, expr, tw_expr in reader:
             commit = User.get_user_commit_info(commit_name)
+            year_story = 160
             if int(new) == 0:
-                point = 160 * sqrt(float(expr))
+                point = year_story * sqrt(float(expr))
             else:
-                point = 160 * sqrt(float(expr)) * int(commit["count"]) / 90
+                point = year_story * sqrt(float(expr)) * int(commit["count"]) / year_story
 
             result.append({
                 "id": int(user_id),
