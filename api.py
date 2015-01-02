@@ -1,10 +1,12 @@
 from flask import Flask, flash
+
 from flask.ext import restful
 from flask_restful import reqparse, Resource
 
 from flask.ext.cache import Cache
+
 from run import Info
-from pr import PR
+from redisdb.pr import PR
 from db import get_db
 
 

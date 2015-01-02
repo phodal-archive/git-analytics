@@ -2,7 +2,8 @@ import difflib
 import csv
 from math import sqrt
 
-from database import redis_execute, get_pipeline
+from redisdb.database import redis_execute, get_pipeline
+
 
 pipe = get_pipeline()
 
