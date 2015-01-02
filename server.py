@@ -3,9 +3,6 @@ from flask import Flask, flash
 from flask.ext import restful
 from flask_restful import reqparse, Resource
 
-from flask.ext.cache import Cache
-
-from run import Info
 from redisdb.pr import PR
 from db import get_db
 
@@ -13,11 +10,7 @@ from db import get_db
 app = Flask(__name__)
 app.secret_key = 'why would I tell you my secret key?'
 
-cache = Cache(app, config={'CACHE_TYPE': 'simple'})
-cache.init_app(app, config={'CACHE_TYPE': 'simple'})
-
 api = restful.Api(app)
-info = Info()
 pr = PR()
 all_info = pr.get_info_from_csv(pr, [])
 

@@ -20,8 +20,8 @@ Requirements:
 2.Init Database(Run run.py on REPO PATH)
 
     flask --app=db initdb
-    python run.py REPO_PATH
+    python get_data.py REPO_PATH
 
 3.Start Server
 
-    python api.py    
+    python server.py    
