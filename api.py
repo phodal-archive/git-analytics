@@ -1,3 +1,4 @@
+import json
 from flask import Flask, request, g, flash
 from flask.ext import restful
 from flask.ext.cache import Cache
@@ -62,6 +63,22 @@ class Story(Resource):
         db.commit()
         flash('New entry was successfully posted')
         return args, 201
+
+    @staticmethod
+    def get():
+        db = get_db()
+        results = []
+        cursor = db.execute('select * from pair')
+        for information in cursor.fetchall():
+            result = {"story_type": information["story_type"],
+                      "story_number": information["story_number"],
+                      "story_description": information["story_description"],
+                      "story_title": information["story_title"],
+                      "user": information["user"],
+                      "story_day": information["story_day"]}
+            results.append(result)
+        db.commit()
+        return results, 201
 
 
 api.add_resource(User, '/user/<string:user_name>')
