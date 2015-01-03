@@ -3,7 +3,7 @@ from flask.ext import restful
 from flask_restful import reqparse, Resource
 
 from redisdb.pr import PR
-from db import get_db
+from db import get_db, post_story
 
 app = Flask(__name__)
 app.secret_key = 'why would I tell you my secret key?'
@@ -32,12 +32,7 @@ class Story(Resource):
     @staticmethod
     def post():
         args = parser.parse_args()
-        db = get_db()
-        db.execute(
-            'insert into pair (story_type, story_number, story_description, story_title, user, story_day) values (?, ?, ?, ?, ?, ?)',
-            [args["story_type"], args["story_number"], args["story_description"], args["story_title"], args["user"],
-             args["story_day"]])
-        db.commit()
+        post_story(args)
         flash('New entry was successfully posted')
         return args, 201
 

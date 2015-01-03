@@ -42,3 +42,12 @@ def close_db(error):
     """Closes the database again at the end of the request."""
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
+
+
+def post_story(args):
+    db = get_db()
+    db.execute(
+        'insert into pair (story_type, story_number, story_description, story_title, user, story_day) values (?, ?, ?, ?, ?, ?)',
+        [args["story_type"], args["story_number"], args["story_description"], args["story_title"], args["user"],
+         args["story_day"]])
+    db.commit()
