@@ -1,11 +1,9 @@
 from flask import Flask, flash
-
 from flask.ext import restful
 from flask_restful import reqparse, Resource
 
 from redisdb.pr import PR
 from db import get_db
-
 
 app = Flask(__name__)
 app.secret_key = 'why would I tell you my secret key?'
@@ -13,22 +11,6 @@ app.secret_key = 'why would I tell you my secret key?'
 api = restful.Api(app)
 pr = PR()
 all_info = pr.get_info_from_csv(pr, [])
-
-
-class User(Resource):
-    @staticmethod
-    def get(user_name):
-        information = pr.get_user_commit_info(pr, user_name)
-        return information, 201
-
-
-class UserInfo(Resource):
-    @staticmethod
-    def get(user_name):
-        result = []
-        result = pr.get_info_from_csv(result, user_name)
-        result["more"] = pr.get_user_commit_info(user_name)
-        return result, 201
 
 
 class All(Resource):
@@ -76,8 +58,6 @@ class Story(Resource):
         return results, 201
 
 
-api.add_resource(User, '/user/<string:user_name>')
-api.add_resource(UserInfo, '/userInfo/<string:user_name>')
 api.add_resource(All, '/all/account')
 api.add_resource(Story, '/story')
 
