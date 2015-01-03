@@ -1,7 +1,7 @@
 import re
 
 from redisdb.database import get_pipeline, redis_execute
-from commits import Commit
+from redisdb.commits import Commit
 
 
 commit = Commit()
